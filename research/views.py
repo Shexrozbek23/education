@@ -22,7 +22,7 @@ from .models import PHenology,Photo,Production,Protect,Research,Note,Experiment
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from users.models import UserInfo
-
+from rest_framework.pagination import LimitOffsetPagination
 class UserView(APIView):
 
     def get(self, request):
@@ -449,20 +449,22 @@ class ExperimentDownloadView(APIView):
 class WokrekResult(APIView):
 
     def get(self,request):
-        context={}
+        context=[]
         s=1
         users = UserInfo.objects.all()
         for user in users:
+            if user.user_role == 1:
+                continue
             counts={}
-            counts['user'] = user.username
-            counts['Зарарли организм']=Research.objects.filter(created_by=user).count()
+            counts['user'] = user.full_name
+            counts['Зарарлирганизм']=Research.objects.filter(created_by=user).count()
             counts['Маҳсулот']= Production.objects.filter(created_by=user).count()
             counts['Фенология']= PHenology.objects.filter(created_by=user).count()
-            counts['Қарши кураш']= Production.objects.filter(created_by=user).count()
+            counts['Қаршикураш']= Production.objects.filter(created_by=user).count()
             counts['Фото']= Photo.objects.filter(created_by=user).count()
-            counts['Қўл ёзмалар']=Note.objects.filter(created_by=user).count()
+            counts['Қўлёзмалар']=Note.objects.filter(created_by=user).count()
             counts['Тажрибалар'] = Experiment.objects.filter(created_by=user).count()
-            context[f'{s}']=counts
+            context.append(counts)
             s+=1
         return Response(context)
 
@@ -474,28 +476,28 @@ class Quarantine(APIView):
         karantin_false={}
         karantin_all={}
         quarantine_type_true = Research.objects.filter(quarantine_type = '1')
-        karantin_true['Karantin soni'] = quarantine_type_true.count()
+        karantin_true['Karantinsoni'] = quarantine_type_true.count()
         karantin_true['Вирус'] = quarantine_type_true.filter(type='Вирус').count()
         karantin_true['Касаллик'] = quarantine_type_true.filter(type='Касаллик').count()
         karantin_true['Заракунанда'] = quarantine_type_true.filter(type='Заракунанда').count()
-        karantin_true['Бегона ўт'] = quarantine_type_true.filter(type='Бегона ўт').count()
+        karantin_true['Бегонаўт'] = quarantine_type_true.filter(type='Бегона ўт').count()
         karantin_true['Бактерия'] = quarantine_type_true.filter(type='Бактерия').count()
         context['Karantin']=karantin_true
         quarantine_type_false= Research.objects.filter(quarantine_type = '2')
-        karantin_false['Karantin soni'] = quarantine_type_false.count()
+        karantin_false['Karantinsoni'] = quarantine_type_false.count()
         karantin_false['Вирус'] = quarantine_type_false.filter(type='Вирус').count()
         karantin_false['Касаллик'] = quarantine_type_false.filter(type='Касаллик').count()
         karantin_false['Заракунанда'] = quarantine_type_false.filter(type='Заракунанда').count()
-        karantin_false['Бегона ўт'] = quarantine_type_false.filter(type='Бегона ўт').count()
+        karantin_false['Бегонаўт'] = quarantine_type_false.filter(type='Бегона ўт').count()
         karantin_false['Бактерия'] = quarantine_type_false.filter(type='Бактерия').count()
-        context['Karantin emas']=karantin_false
-        karantin_all['umumiy Organizm']= karantin_true['Karantin soni']+karantin_false['Karantin soni']
-        karantin_all['umumiy Вирус '] = karantin_true['Вирус']+karantin_false['Вирус']
-        karantin_all['umumiy Касаллик'] = karantin_true['Касаллик'] + karantin_false['Касаллик']
-        karantin_all['umumiy Заракунанда'] = karantin_true['Заракунанда']+karantin_false['Заракунанда']
-        karantin_all['umumiy Бегона ўт'] =karantin_true['Бегона ўт'] + karantin_false['Бегона ўт']
-        karantin_all['umumiy Бактерия'] = karantin_true['Бактерия'] + karantin_false['Бактерия']
-        context['Umumiy Karantin'] = karantin_all
+        context['Karantinemas']=karantin_false
+        karantin_all['Organizm']= karantin_true['Karantinsoni']+karantin_false['Karantinsoni']
+        karantin_all['Вирус'] = karantin_true['Вирус']+karantin_false['Вирус']
+        karantin_all['Касаллик'] = karantin_true['Касаллик'] + karantin_false['Касаллик']
+        karantin_all['Заракунанда'] = karantin_true['Заракунанда']+karantin_false['Заракунанда']
+        karantin_all['Бегона'] =karantin_true['Бегонаўт'] + karantin_false['Бегонаўт']
+        karantin_all['Бактерия'] = karantin_true['Бактерия'] + karantin_false['Бактерия']
+        context['UmumiyKarantin'] = karantin_all
  
         print(quarantine_type_true.count())
         return Response(context)
