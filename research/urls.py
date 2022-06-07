@@ -23,22 +23,18 @@ urlpatterns = [
     #  Protection urls
     re_path(r"^protection/$", ProtectionView.as_view(), name='protection view'),
     path("protection/<pk>", ProtectionUpdateView.as_view(), name='update protection view'),
-    # re_path(r"^final/$", FinalView.as_view(), name='final view'),
-    # path("final/<pk>", FinalUpdateView.as_view(), name='update final view'),
-    # re_path(r"^research/$", ResearchView.as_view(), name='research view'),
-    # path("research/<pk>", ResearchUpdateView.as_view(), name='update research view'),
-    # path("final/status/<pk>", FinalStatusView.as_view(), name='update final view'),
     re_path(r"^researchall/$", ResearchDetailView.as_view(), name='research view'),
     re_path(r"^research/$", ResearchU.as_view(), name='research view'),
     path("research/<pk>", ResearchUpdateU.as_view(), name='research update view'),
     re_path(r"^country/$", CountryList.as_view(), name='country view'),
     re_path(r"^productypes/$", ProductTypeList.as_view(), name='productype view'),
     re_path(r"^months/$", MonthList.as_view(), name='Months'),
-    # re_path(r'^user/$', UserView.as_view(), name='current_user'),
     re_path(r'^auth/$', auth_views.obtain_auth_token),
     path('photodown/<int:pk>', PhotoDownloadView.as_view(), name='photo_download'),
     path('notedown/<int:pk>', NoteDownloadView.as_view(), name='note_download'),
     path('experimentdown/<int:pk>', ExperimentDownloadView.as_view(), name='experiment_download'),
     re_path(r"^worker/result/$", WokrekResult.as_view()),
-    re_path(r"^quarantine/result/$", Quarantine.as_view())
+    re_path(r"^quarantine/result/$", Quarantine.as_view()),
+    re_path(r'^user/change/password$',UserPasswordChangeAPIView.as_view()),
+    re_path(r'^plants$',PlantAPIView.as_view())
 ]

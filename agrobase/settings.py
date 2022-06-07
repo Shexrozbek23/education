@@ -91,7 +91,9 @@ WSGI_APPLICATION = 'agrobase.wsgi.application'
 AUTH_USER_MODEL = 'users.UserInfo'
 
 # REST_FRAMEWORK = {
-#     # Use Django's standard `django.contrib.auth` permissions,
+#     # Use Django's standStarting development server at http://127.0.0.1:8000/
+# Quit the server with CONTROL-C.
+# ard `django.contrib.auth` permissions,
 #     # or allow read-only access for unauthenticated users.
 #     'DEFAULT_PERMISSION_CLASSES': (
 #         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
@@ -184,3 +186,15 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
+CORS_ALLOW_CREDENTIALS = True

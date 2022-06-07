@@ -116,43 +116,6 @@ class Research(BaseModel):
         default_permissions = ()
 
 
-
-# class Phenology(BaseModel):
-#     phenology = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
-#                                     related_name='phenology', related_query_name='phenology')
-#     pheno_status = models.BooleanField(default=False, blank=False)
-#     """Fenologiyasi"""
-#     eggs = models.TextField(null=True)
-#     month_eggs = models.ManyToManyField(Months, blank=True, verbose_name='Month of eggs+')
-#     day_eggs = models.TextField(max_length=100, blank=True, null=True)
-  
-#     """Lichinka"""
-#     larva = models.TextField(blank=True, null=True)
-#     month_larva = models.ManyToManyField(Months, blank=True, related_name='Month of larva+')
-#     day_larva = models.TextField(max_length=100, blank=True, null=True)
- 
-#     """G'umbak"""
-#     fungus = models.TextField(blank=True, null=True)
-#     month_fungus = models.ManyToManyField(Months, blank=True, related_name='Month of fungus+')
-#     day_fungus = models.TextField(max_length=100, blank=True, null=True)
-
-#     """Yetuk Zot"""
-#     mature = models.TextField(blank=True, null=True)
-#     month_mature = models.ManyToManyField(Months, blank=True, related_name='Month of mature+')
-#     day_mature = models.TextField(max_length=100, blank=True, null=True)
-
-#     """Ko'payishi"""
-#     manipulation = models.TextField(blank=True, null=True)
-#     month_m = models.ManyToManyField(Months, blank=True, related_name='Month of manipulation+')
-#     day_m = models.TextField(max_length=100, blank=True, null=True)
-#     prediction = models.TextField(blank=True, null=True)
-
-#     class Meta:
-#         verbose_name = _('Phenology detail')
-#         verbose_name_plural = _('Phenology details')
-#         db_table = 'Phenology'
-
-
 class PHenology(BaseModel):
     phenology = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
                                     related_name='phenology', related_query_name='phenology')
@@ -191,23 +154,6 @@ class PHenology(BaseModel):
         db_table = 'PHenology'
 
 
-# class Product(BaseModel):
-#     production = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
-#                                     related_name='products', related_query_name='products')
-#     product_status = models.BooleanField(default=False)
-#     product = models.CharField(max_length=35, blank=True, null=True)
-#     product_hs_code = models.CharField(max_length=15, blank=True, null=True, verbose_name='KOD TN ved')
-#     type_product = models.ManyToManyField(ProductTypes, blank=True, related_name='Product types+')
-
-#     class Meta:
-#         verbose_name = _('Product')
-#         verbose_name_plural = _('Products')
-#         db_table = 'Product'
-
-#     def __str__(self):
-#         return self.product
-
-
 class Production(BaseModel):
     production = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
                                     related_name='products', related_query_name='products')
@@ -223,20 +169,6 @@ class Production(BaseModel):
 
     def __str__(self):
         return self.product
-
-# class Protection(BaseModel):
-#     protection = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
-#                                     related_name='protections', related_query_name='protections')
-#     protect_status = models.BooleanField(default=False)
-#     agro_protect = models.CharField(max_length=255, null=True, blank=True)
-#     bio_protect = models.CharField(max_length=255, null=True, blank=True)
-#     chemistry_protect = models.CharField(max_length=255, null=True, blank=True)
-
-
-#     class Meta:
-#         verbose_name = _('Protection result')
-#         verbose_name_plural = _('Protection results')
-#         db_table = 'protection'
 
 class Protect(BaseModel):
     protection = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
@@ -259,8 +191,7 @@ class Photo(BaseModel):
     photos = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
                                     related_name='photos', related_query_name='photos')
     status = models.BooleanField(default=False)
-    #  ForeignKey(User, related_name='updated_%(model_name)s_user', null=True,
-    # #                                on_delete=models.SET_NULL)
+   
 
 class Note(BaseModel):
     name = models.CharField(max_length=100, blank=True)
@@ -269,11 +200,7 @@ class Note(BaseModel):
     notes = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
                                     related_name='notes', related_query_name='notes')
     status = models.BooleanField(default=False)
-    # created_by = models.ForeignKey(User, related_name='created_%(model_name)s_user', null=True,
-    #                                on_delete=models.SET_NULL)
-    # updated_by = models.ForeignKey(User, related_name='updated_%(model_name)s_user', null=True,
-    #                                  on_delete=models.SET_NULL)
-
+ 
 
 class Experiment(BaseModel):
     name = models.CharField(max_length=100, blank=True)
@@ -281,8 +208,12 @@ class Experiment(BaseModel):
 
     experiments = models.ForeignKey(Research, on_delete=models.CASCADE, null=True, 
                                     related_name='experiments', related_query_name='experiments')
-    # created_by = models.ForeignKey(User, related_name='created_%(model_name)s_user', null=True,
-    #                                on_delete=models.SET_NULL)
-    # updated_by = models.ForeignKey(User, related_name='updated_%(model_name)s_user', null=True,
-    #                                on_delete=models.SET_NULL)
+    status = models.BooleanField(default=False)
 
+class Plants(models.Model):
+    name = models.CharField(max_length = 300, default = '')
+    type = models.CharField(max_length = 300, default = '')
+    add_data = models.DateField(auto_now_add = True)
+
+    def __str__(self):
+        return self.name

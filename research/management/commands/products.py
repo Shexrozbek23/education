@@ -13,10 +13,13 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         time = timezone.now().strftime('%X')
         self.stdout.write("It's now %s" % time)
-        col_names = ('pk', 'product')
-        types = pd.read_csv("static/productTypes.csv", sep=",", names=col_names, header=None)
-        for index, types in types.iterrows():
+        col_names = ('pk', 'crops',)
+        typess = pd.read_csv("static/productTypes.csv", sep=",", names=col_names, header=None)
+        for index, types in typess.iterrows():
+            print(types.crops)
+            if types.pk == "pk":
+                continue
             ProductTypes.objects.get_or_create(
                 pk=types.pk,
-                product=types.product,
+                product=types.crops,
             )

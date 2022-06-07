@@ -22,7 +22,7 @@ class MonthsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Months, MonthsAdmin)
-
+admin.site.register(Plants)
 
 #
 

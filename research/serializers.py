@@ -1,10 +1,11 @@
 # import serializer from rest_framework
+from dataclasses import fields
 from pyexpat import model
 from django.shortcuts import get_object_or_404
 from pkg_resources import require
 from rest_framework import serializers
 from django.contrib.auth.models import User
-
+from django.contrib.auth.password_validation import validate_password
 import research
 # import model from models.py
 from .models import *
@@ -106,7 +107,7 @@ class ProductSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Production
-        fields = ('id', 'product_status', 'product', 'product_hs_code', 'type_product', 'created_by', 'updated_by')
+        fields = ('id', 'product_status', 'product', 'product_hs_code', 'type_product', 'created_by', 'updated_by','status')
 
     def get_created_user_name(self, instance):
         return instance.created_by.username if instance.created_by else None
@@ -144,7 +145,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Photo
-        fields = ('id', 'photo', 'photos', 'created_by', 'updated_by', 'research')
+        fields = ('id', 'photo', 'photos', 'created_by', 'updated_by', 'research','status')
 
     def get_created_user_name(self, instance):
         return instance.created_by.username if instance.created_by else None
@@ -212,10 +213,27 @@ class ResearchSerializer(WritableNestedModelSerializer):
         return instance.updated_by.username if instance.updated_by else None
 
 
+class UserPasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
 
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInfo
+        fields = ['id', 'username',]
 
+    # def update(self, instance, validated_data):
+    #     for key, value in validated_data.items():
+    #         setattr(instance, key, value)
+    #     instance.save()
+    #     return instance
 
-
-
+class PlantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plants
+        fields=['name','type']
 

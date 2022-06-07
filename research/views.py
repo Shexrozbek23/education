@@ -332,120 +332,6 @@ class ExperimentDownloadView(APIView):
         response['Content-Disposition'] = 'attachment; filename="%s%s"' % (str(uuid.uuid4()), file_extension)
         return response
 
-
-
-
-# class AttachmentPhotoVResearchDetailViewiew(ListCreateAPIView):
-#     serializer_class = AttachmentPhotoSerializer
-#     parser_classes = [MultiPartParser, FormParser, FileUploadParser, JSONParser]
-#     pagination_class = None
-#     ordering = ['-pk']
-
-#     def get_queryset(self):
-#         return AttachmentPhoto.objects.all()
-
-#     def post(self, request):
-#         serializer = self.serializer_class(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(created_by=self.request.user)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    
-
-# class AttachmentPhotoDetailView(RetrieveUpdateDestroyAPIView):
-#     serializer_class = AttachmentPhotoSerializer
-#     http_method_names = ['get', 'put', 'delete']
-
-#     def get(self, request, pk):
-#         attachment = get_object_or_404(AttachmentPhoto, id=pk)
-#         serializer = self.serializer_class(attachment)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     def put(self, request, pk):
-#         attachment = get_object_or_404(AttachmentPhoto, id=pk)
-#         serializer = self.serializer_class(attachment, data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(updated_by=self.request.user)
-#         return Response(serializer.data, status.HTTP_202_ACCEPTED)
-
-#     def delete(self, request, pk):
-#         attachment = get_object_or_404(AttachmentPhoto, id=pk)
-#         attachment.delete()
-#         return Response(nonContent(), status.HTTP_204_NO_CONTENT)
-
-
-# class AttachmentNoteView(ListCreateAPIView):
-#     serializer_class = AttachmentNoteSerializer
-#     parser_classes = [MultiPartParser, FormParser, FileUploadParser]
-#     pagination_class = None
-#     ordering = ['-pk']
-
-#     def get_queryset(self):
-#         return AttachNote.objects.all()
-
-#     def post(self, request):
-#         serializer = self.serializer_class(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(created_by=self.request.user)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# class AttachmentNoteDetailView(RetrieveUpdateDestroyAPIView):
-#     serializer_class = AttachmentNoteSerializer
-#     http_method_names = ['get', 'put', 'delete']
-
-#     def get(self, request, pk):
-#         attachment = get_object_or_404(AttachNote, id=pk)
-#         serializer = self.serializer_class(attachment)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
-
-#     def put(self, request, pk):
-#         attachment = get_object_or_404(AttachNote, id=pk)
-#         serializer = self.serializer_class(attachment, data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(updated_by=self.request.user)
-#         return Response(serializer.data, status.HTTP_202_ACCEPTED)
-
-#     def delete(self, request, pk):
-#         attachment = get_object_or_404(AttachNote, id=pk)
-#         attachment.delete()
-#         return Response(nonContent(), status.HTTP_204_NO_CONTENT)
-
-
-# class AttachmentExperimentView(ListCreateAPIView):
-#     serializer_class = AttachmentExperimentSerializer
-#     parser_classes = [MultiPartParser, FormParser, JSONParser, ]
-#     pagination_class = None
-#     ordering = ['-pk']
-
-#     def get_queryset(self):
-#         return AttachmentExperiment.objects.all()
-
-#     def post(self, request):
-#         serializer = self.serializer_class(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(created_by=self.request.user)
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-# class AttachmentExperimentDetailView(RetrieveUpdateDestroyAPIView):
-#     serializer_class = AttachmentExperimentSerializer
-#     http_method_names = ['get', 'put', 'delete']
-
-#     def get(self, request, pk):
-#         attachment = get_object_or_404(AttachmentExperiment, id=pk)
-#         serializer = selffilter(id=1)
-#     def put(self, request, pk):
-#         attachment = get_object_or_404(AttachmentExperiment, id=pk)
-#         serializer = self.serializer_class(attachment, data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(updated_by=self.request.user)
-#         return Response(serializer.data, status.HTTP_202_ACCEPTED)
-
-#     def delete(self, request, pk):
-#         attachment = get_object_or_404(AttachmentExperiment, id=pk)
-#         attachment.delete()
-#         return Response(nonContent(), status.HTTP_204_NO_CONTENT)
-
 class WokrekResult(APIView):
 
     def get(self,request):
@@ -458,12 +344,14 @@ class WokrekResult(APIView):
             counts={}
             counts['user'] = user.full_name
             counts['Зарарлирганизм']=Research.objects.filter(created_by=user).count()
-            counts['Маҳсулот']= Production.objects.filter(created_by=user).count()
-            counts['Фенология']= PHenology.objects.filter(created_by=user).count()
-            counts['Қаршикураш']= Production.objects.filter(created_by=user).count()
-            counts['Фото']= Photo.objects.filter(created_by=user).count()
-            counts['Қўлёзмалар']=Note.objects.filter(created_by=user).count()
-            counts['Тажрибалар'] = Experiment.objects.filter(created_by=user).count()
+            counts['Маҳсулот']= Production.objects.filter(created_by=user,product_status=True).count()
+            counts['Фенология']= PHenology.objects.filter(created_by=user,pheno_status=True).count()
+            counts['Қаршикураш']= Protect.objects.filter(created_by=user,protect_status=True).count()
+            counts['Фото']= Photo.objects.filter(created_by=user,status=True).count()
+            counts['Қўлёзмалар']=Note.objects.filter(created_by=user,status=True).count()
+            counts['Тажрибалар'] = Experiment.objects.filter(created_by=user,status=True).count()
+            counts['Сумма'] = counts['Зарарлирганизм'] + counts['Маҳсулот'] + counts['Қаршикураш']\
+                                + counts['Фото'] + counts['Фенология'] + counts['Қўлёзмалар'] + counts['Тажрибалар']
             context.append(counts)
             s+=1
         return Response(context)
@@ -501,4 +389,40 @@ class Quarantine(APIView):
  
         print(quarantine_type_true.count())
         return Response(context)
-        
+
+
+
+class UserPasswordChangeAPIView(views.APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return response.Response(serializer.data)
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def post(self, request):
+        self.object = self.get_object()
+        serializer = UserPasswordChangeSerializer(data=request.data)
+        user_info_serializer = UserSerializer(request.user)
+        if serializer.is_valid():
+            # Check old password
+            old_password = serializer.data.get("old_password")
+            if not self.object.check_password(old_password):
+                return response.Response(
+                    {
+                        "old_password": ["Wrong password."]
+                    },
+                    status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return response.Response(user_info_serializer.data, status=status.HTTP_200_OK)
+
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PlantAPIView(views.APIView):
+    def get(self,request):
+        plants = PlantSerializer(Plants.objects.all(),many=True)
+        return response.Response(plants.data,status=status.HTTP_200_OK)
